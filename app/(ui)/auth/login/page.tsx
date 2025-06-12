@@ -1,18 +1,15 @@
 import AuthLayout from "../AuthLayout";
 import LoginForm from "./LoginForm";
 
-interface SigninPageProps {
-  onNavigateToSignup: () => void;
-  onNavigateToLanding: () => void;
-}
+// interface SigninPageProps {
+//   onNavigateToSignup: () => void;
+//   onNavigateToLanding: () => void;
+// }
 
-function Page({ onNavigateToSignup, onNavigateToLanding }: SigninPageProps) {
+function Page() {
   return (
-    <AuthLayout
-      title="Sign in to your account"
-      onNavigateToLanding={onNavigateToLanding}
-    >
-      <LoginForm onNavigateToSignup={onNavigateToSignup} />
+    <AuthLayout title="Sign in to your account">
+      <LoginForm />
     </AuthLayout>
   );
 }

@@ -4,11 +4,11 @@ import "pg";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "dpg-d14ncjruibrs73akv5pg-a.oregon-postgres.render.com",
-  port: 5432,
-  username: "synergykit_db",
-  password: "fJsCCj0HaTtEpKIDIqO6PKKcKKLcAX7N",
-  database: "synergykit_db",
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   entities: ["entity/*.entity.ts"],
   synchronize: true,
   logging: false,

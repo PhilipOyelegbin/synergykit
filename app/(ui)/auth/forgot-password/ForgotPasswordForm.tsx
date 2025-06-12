@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { EMAIL_ICON_SVG } from "../../../_components/constants";
+import Link from "next/link";
 
-interface ForgotPasswordFormProps {
-  onNavigateToSignin: () => void;
-  onRequestReset: (email: string) => void;
-}
+// interface ForgotPasswordFormProps {
+//   onNavigateToSignin: () => void;
+//   onRequestReset: (email: string) => void;
+// }
 
 const InputField: React.FC<{
   id: string;
@@ -36,15 +37,12 @@ const InputField: React.FC<{
   </div>
 );
 
-export default function ForgotPasswordForm({
-  onNavigateToSignin,
-  onRequestReset,
-}: ForgotPasswordFormProps) {
+export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onRequestReset(email);
+    console.log(email);
   };
 
   return (
@@ -69,16 +67,12 @@ export default function ForgotPasswordForm({
       </div>
       <p className="mt-6 text-center text-sm text-[#6b7280]">
         Remember your password?{" "}
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavigateToSignin();
-          }}
+        <Link
+          href="/auth/logn"
           className="font-medium text-[#3b82f6] hover:text-[#2563eb]"
         >
           Sign In
-        </a>
+        </Link>
       </p>
     </form>
   );

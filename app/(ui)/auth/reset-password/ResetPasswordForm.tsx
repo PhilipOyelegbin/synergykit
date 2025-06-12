@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { LOCK_ICON_SVG } from "../../../_components/constants";
+import Link from "next/link";
 
-interface ResetPasswordFormProps {
-  onNavigateToSignin: () => void;
-  disabled?: boolean;
-}
+// interface ResetPasswordFormProps {
+//   disabled?: boolean;
+// }
 
 const InputField: React.FC<{
   id: string;
@@ -36,10 +36,7 @@ const InputField: React.FC<{
   </div>
 );
 
-export default function ResetPasswordForm({
-  onNavigateToSignin,
-  disabled,
-}: ResetPasswordFormProps) {
+export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -54,7 +51,6 @@ export default function ResetPasswordForm({
     alert(
       "Password has been reset (simulated). Please sign in with your new password."
     );
-    onNavigateToSignin(); // Navigate to signin page after successful reset
   };
 
   return (
@@ -82,7 +78,6 @@ export default function ResetPasswordForm({
       <div>
         <button
           type="submit"
-          disabled={disabled}
           className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#3b82f6] hover:bg-[#2563eb] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] transition duration-150 ease-in-out disabled:opacity-50"
         >
           Reset Password
@@ -90,16 +85,12 @@ export default function ResetPasswordForm({
       </div>
       <p className="mt-6 text-center text-sm text-[#6b7280]">
         Changed your mind or password reset successfully?{" "}
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            onNavigateToSignin();
-          }}
+        <Link
+          href="/auth/login"
           className="font-medium text-[#3b82f6] hover:text-[#2563eb]"
         >
           Sign In
-        </a>
+        </Link>
       </p>
     </form>
   );
