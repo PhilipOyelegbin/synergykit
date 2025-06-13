@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { User } from "../../entity/user.entity";
-import { AppDataSource } from "../../database";
+import { prisma } from "../..";
 // import * as argon from "argon2";
-
-// const userRepository = AppDataSource.getRepository(User);
 
 // export async function GET(req: Request, params: { params: { id: string } }) {
 //   try {
@@ -62,14 +59,13 @@ export async function DELETE(req: Request) {
   try {
     const urlParams = req.url.search;
     const id = urlParams.toString().split("/").pop();
-    const userRepository = AppDataSource.getRepository(User);
-    const existingUser = await userRepository.findOneBy({ id });
+    const existingUser = await prisma.user.findUnique({ where: { id } });
 
     if (!existingUser) {
       throw NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    await userRepository.delete({ id });
+    await prisma.user.delete({ where: {id }});
 
     return NextResponse.json(
       { message: "User deleted successfully" },

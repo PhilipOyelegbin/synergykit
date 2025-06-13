@@ -9,10 +9,6 @@ import {
 } from "../../../_components/constants";
 import Link from "next/link";
 
-// interface SignupFormProps {
-//   onNavigateToSignin: () => void;
-// }
-
 const InputField: React.FC<{
   id: string;
   name: string;
@@ -48,27 +44,34 @@ export default function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords don't match!");
-      return;
+    try {
+      event.preventDefault();
+      if (password !== confirmPassword) {
+        alert("Passwords don't match!");
+        return;
+      }
+      const response = await fetch(`/api/user`, {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+        headers: { "content-type": "application/json" },
+      });
+      if (!response.ok) {
+        console.log("An error occured", response?.statusText);
+        alert("An error occurred while signing up. Please try again.");
+      }
+
+      await response.json();
+      alert(
+        "Signup functionality not implemented yet. Check console for data."
+      );
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      console.log(error);
+      alert("Internal server error.");
     }
-    // TODO: Implement actual signup logic
-    const response = await fetch("/api/user", {
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-      headers: { "content-type": "application/json" },
-    });
-    if (!response.ok) {
-      console.log("An error occured", response?.statusText);
-    }
-    const data = await response.json();
-    console.log("Signup attempt log:", data);
-    alert("Signup functionality not implemented yet. Check console for data.");
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
   };
 
   return (

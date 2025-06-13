@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model note {
+  id          Int      @id(map: "PK_96d0c172a4fba276b1bbed43058") @default(autoincrement())
+  userId      String?  @db.Uuid
+  description String   @db.VarChar
+  user        user?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5b87d9d19127bd5d92026017a7b")
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("note")
+}
+
+model user {
+  id                            String    @id(map: "PK_cace4a159ff9f2512dd42373760") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name                          String    @db.VarChar(100)
+  email                         String    @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
+  password                      String    @db.VarChar
+  isVerify                      Boolean   @default(false)
+  verification_token            String?   @db.VarChar
+  reset_token                   String?   @db.VarChar
+  verification_token_expiration DateTime? @db.Timestamptz(6)
+  reset_token_expiration        DateTime? @db.Timestamptz(6)
+  note                          note[]
+  createdAt                     DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt                     DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@map("user")
+}

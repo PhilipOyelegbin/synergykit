@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
-import { User } from "../entity/user.entity";
-import { AppDataSource } from "../database";
 import * as argon from "argon2";
-
-const userRepository = AppDataSource.getRepository(User);
+import { prisma } from "..";
 
 export async function POST(req: Request) {
   try {
     const { name, email, password } = await req.json();
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
 
-    const existingUser = await userRepository.find({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw NextResponse.json(
         { message: "Email already in use" },
@@ -18,11 +21,12 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await argon.hash(password);
-
-    const newUser = await userRepository.save({
-      name,
-      email,
-      password: hashedPassword,
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
     });
 
     return NextResponse.json(
@@ -36,7 +40,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const userData = await userRepository.find();
+    const userData = await prisma.user.findMany();
     return NextResponse.json(
       { message: "All user fetched succesfully", data: userData },
       { status: 200 }
