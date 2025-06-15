@@ -17,13 +17,13 @@ export default function Hero() {
         <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           <Link
             href="/auth/signup"
-            className="w-full sm:w-auto bg-white text-[#2563eb] hover:bg-gray-100 px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-md transition duration-150 ease-in-out transform hover:scale-105"
+            className="w-full block sm:w-auto bg-white text-[#2563eb] hover:bg-gray-100 px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-md transition duration-150 ease-in-out transform hover:scale-105"
           >
             Get Started Free
           </Link>
           <Link
             href="#features"
-            className="w-full sm:w-auto flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#2563eb] hover:bg-[#3b82f6] transition duration-150 ease-in-out transform hover:scale-105"
+            className="w-full block sm:w-auto items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#2563eb] hover:bg-[#3b82f6] transition duration-150 ease-in-out transform hover:scale-105"
           >
             Explore Features
           </Link>

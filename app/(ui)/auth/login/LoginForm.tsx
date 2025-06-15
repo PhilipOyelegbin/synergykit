@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   EMAIL_ICON_SVG,
   LOCK_ICON_SVG,
   GOOGLE_ICON_SVG,
 } from "../../../_components/constants";
 import Link from "next/link";
-
-// interface LoginFormProps {
-//   onNavigateToSignup: () => void;
-// }
+import { useRouter } from "next/navigation";
+import { ErrorToast, SuccessToast } from "@/app/_components/toast";
+import { signIn, useSession } from "next-auth/react";
 
 const InputField: React.FC<{
   id: string;
@@ -43,13 +42,56 @@ const InputField: React.FC<{
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errMessage, setErrMessage] = useState("");
+  const [sucMessage, setSucMessage] = useState("");
+  const session = useSession();
+  const navigate = useRouter();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // TODO: Implement actual signin logic
-    console.log("Signin attempt with:", { email, password });
-    alert("Signin functionality not implemented yet. Check console for data.");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      console.log(response);
+      if (response?.error) {
+        setErrMessage(`${response?.error}`);
+      } else if (response?.url) {
+        setSucMessage("Login successful!");
+        setEmail("");
+        setPassword("");
+        navigate.push("/notes");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrMessage("Internal server error. Please try again later.");
+    }
   };
+
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      navigate.replace("/notes");
+    }
+
+    if (errMessage) {
+      const timer = setTimeout(() => {
+        setErrMessage("");
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (sucMessage) {
+      const timer = setTimeout(() => {
+        setSucMessage("");
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [session, navigate, errMessage, sucMessage]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -138,6 +180,9 @@ export default function LoginForm() {
           Sign Up
         </Link>
       </p>
+
+      {errMessage && <ErrorToast message={errMessage} />}
+      {sucMessage && <SuccessToast message={sucMessage} />}
     </form>
   );
 }

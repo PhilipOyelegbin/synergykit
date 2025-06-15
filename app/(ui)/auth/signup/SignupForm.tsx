@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   USER_ICON_SVG,
   EMAIL_ICON_SVG,
@@ -8,6 +8,8 @@ import {
   GOOGLE_ICON_SVG,
 } from "../../../_components/constants";
 import Link from "next/link";
+import { ErrorToast, SuccessToast } from "@/app/_components/toast";
+import { useRouter } from "next/navigation";
 
 const InputField: React.FC<{
   id: string;
@@ -42,13 +44,15 @@ export default function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errMessage, setErrMessage] = useState("");
+  const [sucMessage, setSucMessage] = useState("");
+  const navigate = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
       if (password !== confirmPassword) {
-        alert("Passwords don't match!");
-        return;
+        return setErrMessage("Passwords don't match!");
       }
       const response = await fetch(`/api/user`, {
         method: "POST",
@@ -56,23 +60,39 @@ export default function SignupForm() {
         headers: { "content-type": "application/json" },
       });
       if (!response.ok) {
-        console.log("An error occured", response?.statusText);
-        alert("An error occurred while signing up. Please try again.");
+        return setErrMessage(`Error occured, ${response?.statusText}`);
+      } else {
+        const result = await response.json();
+        setSucMessage(result?.message);
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        navigate.push("/auth/login");
       }
-
-      await response.json();
-      alert(
-        "Signup functionality not implemented yet. Check console for data."
-      );
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
     } catch (error) {
       console.log(error);
-      alert("Internal server error.");
+      return setErrMessage("Internal server error.");
     }
   };
+
+  useEffect(() => {
+    if (errMessage) {
+      const timer = setTimeout(() => {
+        setErrMessage("");
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (sucMessage) {
+      const timer = setTimeout(() => {
+        setSucMessage("");
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errMessage, sucMessage]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -120,7 +140,7 @@ export default function SignupForm() {
       <div>
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#3b82f6] hover:bg-[#2563eb] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] transition duration-150 ease-in-out mt-2"
+          className="group relative w-full flex justify-center py-3 px-4 cursor-pointer border border-transparent text-sm font-medium rounded-md text-white bg-[#3b82f6] hover:bg-[#2563eb] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] transition duration-150 ease-in-out mt-2"
         >
           Create Account
         </button>
@@ -139,7 +159,7 @@ export default function SignupForm() {
         <button
           type="button"
           onClick={() => alert("Social login not implemented.")}
-          className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-[#6b7280] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60a5fa] transition duration-150 ease-in-out"
+          className="w-full inline-flex justify-center py-3 px-4 cursor-pointer border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-[#6b7280] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60a5fa] transition duration-150 ease-in-out"
         >
           <span className="sr-only">Sign up with Google</span>
           {GOOGLE_ICON_SVG}
@@ -156,6 +176,9 @@ export default function SignupForm() {
           Sign In
         </Link>
       </p>
+
+      {errMessage && <ErrorToast message={errMessage} />}
+      {sucMessage && <SuccessToast message={sucMessage} />}
     </form>
   );
 }

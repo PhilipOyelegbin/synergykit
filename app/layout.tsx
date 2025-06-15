@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
+import ClientProviders from "./_components/Provider";
 import "./globals.css";
-import Navbar from "./_components/Navbar";
-import Footer from "./_components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const interSans = Inter({
   variable: "--font-geist-mono",
@@ -33,12 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${interSans.variable} antialiased bg-[#f9fafb]`}
+        className={`${interSans.variable} antialiased bg-[#f9fafb]`}
         suppressHydrationWarning
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

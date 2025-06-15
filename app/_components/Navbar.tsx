@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { SYNERGY_LOGO_SVG } from "./constants";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import Logout from "./Logout";
 
 const navItems = [
   {
@@ -20,6 +22,7 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const session = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -48,12 +51,17 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/auth/login"
-                className="ml-4 bg-[#3b82f6] text-white hover:bg-[#2563eb] px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
-              >
-                Login
-              </Link>
+
+              {session.status !== "authenticated" ? (
+                <Link
+                  href="/auth/login"
+                  className="ml-4 bg-[#3b82f6] text-white hover:bg-[#2563eb] px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                >
+                  Login
+                </Link>
+              ) : (
+                <Logout />
+              )}
             </div>
           </div>
 
@@ -119,12 +127,16 @@ export default function Navbar() {
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-5">
-              <Link
-                href="/auth/login"
-                className="w-full bg-[#3b82f6] text-white hover:bg-[#2563eb] px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
-              >
-                Login
-              </Link>
+              {session.status !== "authenticated" ? (
+                <Link
+                  href="/auth/login"
+                  className="w-fit bg-[#3b82f6] text-white hover:bg-[#2563eb] px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                >
+                  Login
+                </Link>
+              ) : (
+                <Logout />
+              )}
             </div>
           </div>
         </div>
