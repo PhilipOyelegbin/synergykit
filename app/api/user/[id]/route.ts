@@ -13,7 +13,7 @@ export async function GET(
       include: { note: true },
     });
     if (!user) {
-      throw NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(
@@ -21,7 +21,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (err) {
-    throw NextResponse.json({ message: "Error", error: err }, { status: 500 });
+    throw err;
   }
 }
 
@@ -37,7 +37,7 @@ export async function PATCH(
       where: { id },
     });
     if (!existingUser) {
-      throw NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     if (body.password) {
@@ -52,7 +52,7 @@ export async function PATCH(
 
       return NextResponse.json(
         { message: "User updated succesfully" },
-        { status: 204 }
+        { status: 200 }
       );
     }
 
@@ -60,10 +60,10 @@ export async function PATCH(
 
     return NextResponse.json(
       { message: "User updated succesfully" },
-      { status: 204 }
+      { status: 200 }
     );
   } catch (err) {
-    return NextResponse.json({ message: "Error", error: err }, { status: 500 });
+    throw err;
   }
 }
 
@@ -76,16 +76,16 @@ export async function DELETE(
     const existingUser = await prisma.user.findUnique({ where: { id } });
 
     if (!existingUser) {
-      throw NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     await prisma.user.delete({ where: { id } });
 
     return NextResponse.json(
       { message: "User deleted successfully" },
-      { status: 204 }
+      { status: 200 }
     );
   } catch (err) {
-    return NextResponse.json({ message: "Error", error: err }, { status: 500 });
+    throw err;
   }
 }

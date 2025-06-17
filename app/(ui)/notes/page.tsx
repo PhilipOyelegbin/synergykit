@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import AppLayout from "../AppLayout";
 import { redirect } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { ErrorToast, SuccessToast } from "@/app/_components/toast";
 
 function NotesPage() {
@@ -12,6 +12,50 @@ function NotesPage() {
   const [savedNote, setSavedNote] = useState([]);
   const [errMessage, setErrMessage] = useState("");
   const [sucMessage, setSucMessage] = useState("");
+
+  const handleVerify = async () => {
+    try {
+      const response = await fetch(`/api/user`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          id: data?.user?.id,
+        }),
+      });
+      console.log(response);
+      if (!response.ok) {
+        setErrMessage(response.statusText);
+      } else {
+        const result = await response.json();
+        setSucMessage(result.message ?? "User verified successfully");
+      }
+    } catch (error) {
+      setErrMessage(error);
+    }
+  };
+
+  const handleDeleteProfile = async () => {
+    try {
+      if (
+        window.confirm(
+          "Are you sure you want to delete your profile? This action cannot be undone."
+        )
+      ) {
+        const response = await fetch(`/api/user/${data?.user?.id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          setErrMessage(response.statusText ?? "Failed to delete profile");
+        } else {
+          const result = await response.json();
+          setSucMessage(result.message ?? "Profile deleted successfully");
+          await signOut({ redirect: true, callbackUrl: "/" });
+        }
+      }
+    } catch (error) {
+      setErrMessage(error.message ?? "Internal server error");
+    }
+  };
 
   const handleSaveNote = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -100,6 +144,26 @@ function NotesPage() {
   return (
     <AppLayout title="My Notes">
       <div className="space-y-6">
+        <section className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-white rounded-lg shadow-md">
+          <button
+            onClick={handleDeleteProfile}
+            className="cursor-pointer flex-1 bg-rose-400 text-white px-6 py-3 rounded-md hover:bg-rose-600 transition duration-150 ease-in-out font-medium"
+          >
+            Delete Profile
+          </button>
+
+          {!data?.user?.isVerified ? (
+            <button
+              onClick={handleVerify}
+              className="cursor-pointer flex-1 bg-[#3b82f6] text-white px-6 py-3 rounded-md hover:bg-[#2563eb] transition duration-150 ease-in-out font-medium"
+            >
+              Verify Profile
+            </button>
+          ) : (
+            <p className="text-lime-500">Verified</p>
+          )}
+        </section>
+
         <form onSubmit={handleSaveNote} className="space-y-4">
           <label
             htmlFor="note-input"

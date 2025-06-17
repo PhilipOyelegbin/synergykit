@@ -144,7 +144,7 @@ export default function LoginForm() {
       <div>
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#3b82f6] hover:bg-[#2563eb] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] transition duration-150 ease-in-out"
+          className="cursor-pointer group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#3b82f6] hover:bg-[#2563eb] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563eb] transition duration-150 ease-in-out"
         >
           Sign In
         </button>
@@ -163,7 +163,7 @@ export default function LoginForm() {
         <button
           type="button"
           onClick={() => alert("Social login not implemented.")}
-          className="w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-[#6b7280] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60a5fa] transition duration-150 ease-in-out"
+          className="cursor-pointer w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-[#6b7280] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#60a5fa] transition duration-150 ease-in-out"
         >
           <span className="sr-only">Sign in with Google</span>
           {GOOGLE_ICON_SVG}

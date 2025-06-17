@@ -38,6 +38,6 @@ export async function GET() {
       { status: 200 }
     );
   } catch (err) {
-    throw NextResponse.json({ message: "Error", error: err }, { status: 500 });
+    return NextResponse.json({ message: "Error", error: err }, { status: 500 });
   }
 }

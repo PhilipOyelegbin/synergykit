@@ -43,7 +43,7 @@ export async function PATCH(
 
     return NextResponse.json(
       { message: "Note updated succesfully" },
-      { status: 204 }
+      { status: 200 }
     );
   } catch (err) {
     return NextResponse.json({ message: "Error", error: err }, { status: 500 });
@@ -66,7 +66,7 @@ export async function DELETE(
 
     return NextResponse.json(
       { message: "Note deleted successfully" },
-      { status: 204 }
+      { status: 200 }
     );
   } catch (err) {
     return NextResponse.json({ message: "Error", error: err }, { status: 500 });
